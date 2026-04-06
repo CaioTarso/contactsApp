@@ -71,14 +71,14 @@ src/
 A URL da API vem da variavel abaixo:
 
 ```env
-EXPO_PUBLIC_API_URL=http://192.168.0.12:3000
+EXPO_PUBLIC_API_URL=http://seuip:3000
 ```
 
 ### Quando usar IP local
 
 - No navegador e no iPhone com Expo Go, `localhost` normalmente nao funciona como voce espera
 - Use o IP local da maquina na mesma rede Wi-Fi
-- Exemplo: `http://192.168.0.12:3000`
+- Exemplo: `http://seuip:3000`
 
 
 
