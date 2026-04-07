@@ -5,4 +5,5 @@ export const routes = {
   contacts: "/protected/contacts",
   createContact: "/protected/create-contact",
   editContact: "/protected/edit-contact",
+  call: "/protected/call",
 } as const;

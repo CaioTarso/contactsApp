@@ -9,6 +9,7 @@ export default function RootLayout() {
       <Stack.Screen name="protected/contacts" options={{ title: "Contatos" }} />
       <Stack.Screen name="protected/create-contact" options={{ title: "Novo contato" }} />
       <Stack.Screen name="protected/edit-contact" options={{ title: "Editar contato" }} />
+      <Stack.Screen name="protected/call" options={{ title: "Ligacao" }} />
     </Stack>
   );
 }

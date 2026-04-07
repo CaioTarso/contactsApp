@@ -1,6 +1,6 @@
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, Button, FlatList, Image, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, FlatList, Image, Platform, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../../constants/theme";
 import { getSingleParam } from "../../../navigation/params";
 import { routes } from "../../../navigation/routes";
@@ -62,6 +62,17 @@ export default function ContactsScreen() {
       params: {
         token,
         id: contact.id.toString(),
+        name: contact.name,
+        phone: contact.phone,
+        profilePictureUrl: resolveApiUrl(contact.profile_picture_url),
+      },
+    });
+  }
+
+  function handleCallContact(contact: Contact) {
+    router.push({
+      pathname: routes.call,
+      params: {
         name: contact.name,
         phone: contact.phone,
         profilePictureUrl: resolveApiUrl(contact.profile_picture_url),
@@ -133,20 +144,23 @@ export default function ContactsScreen() {
 
             return (
               <View style={styles.card}>
-                <View style={styles.header}>
-                  {imageUri ? (
-                    <Image source={{ uri: imageUri }} style={styles.avatar} />
-                  ) : (
-                    <View style={styles.avatarFallback}>
-                      <Text style={styles.avatarFallbackText}>{item.name.charAt(0).toUpperCase()}</Text>
-                    </View>
-                  )}
+                <Pressable style={styles.pressableArea} onPress={() => handleCallContact(item)}>
+                  <View style={styles.header}>
+                    {imageUri ? (
+                      <Image source={{ uri: imageUri }} style={styles.avatar} />
+                    ) : (
+                      <View style={styles.avatarFallback}>
+                        <Text style={styles.avatarFallbackText}>{item.name.charAt(0).toUpperCase()}</Text>
+                      </View>
+                    )}
 
-                  <View style={styles.headerText}>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.phone}>{item.phone}</Text>
+                    <View style={styles.headerText}>
+                      <Text style={styles.name}>{item.name}</Text>
+                      <Text style={styles.phone}>{item.phone}</Text>
+                      <Text style={styles.callHint}>Toque para iniciar a ligacao</Text>
+                    </View>
                   </View>
-                </View>
+                </Pressable>
 
                 <View style={styles.actions}>
                   <Button title="Editar" onPress={() => handleEditContact(item)} />
@@ -188,6 +202,11 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.card,
   },
+  pressableArea: {
+    margin: -4,
+    padding: 4,
+    borderRadius: 12,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -225,6 +244,11 @@ const styles = StyleSheet.create({
   phone: {
     fontSize: 15,
     color: colors.muted,
+  },
+  callHint: {
+    fontSize: 13,
+    color: "#2563eb",
+    marginTop: 8,
   },
   message: {
     marginTop: 24,
