@@ -1,9 +1,10 @@
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, Button, FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, FlatList, Image, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../../constants/theme";
 import { getSingleParam } from "../../../navigation/params";
 import { routes } from "../../../navigation/routes";
+import { resolveApiUrl } from "../../../services/api/client";
 import { deleteContact, getContacts } from "../../../services/api/contacts";
 import { Contact } from "../../../types";
 
@@ -63,6 +64,7 @@ export default function ContactsScreen() {
         id: contact.id.toString(),
         name: contact.name,
         phone: contact.phone,
+        profilePictureUrl: resolveApiUrl(contact.profile_picture_url),
       },
     });
   }
@@ -126,21 +128,38 @@ export default function ContactsScreen() {
           data={contacts}
           keyExtractor={(item) => item.id.toString()}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.phone}>{item.phone}</Text>
-              <View style={styles.actions}>
-                <Button title="Editar" onPress={() => handleEditContact(item)} />
-                <Button
-                  title={deletingContactId === item.id ? "Excluindo..." : "Excluir"}
-                  color="#c62828"
-                  onPress={() => handleDeleteContact(item)}
-                  disabled={deletingContactId === item.id}
-                />
+          renderItem={({ item }) => {
+            const imageUri = resolveApiUrl(item.profile_picture_url);
+
+            return (
+              <View style={styles.card}>
+                <View style={styles.header}>
+                  {imageUri ? (
+                    <Image source={{ uri: imageUri }} style={styles.avatar} />
+                  ) : (
+                    <View style={styles.avatarFallback}>
+                      <Text style={styles.avatarFallbackText}>{item.name.charAt(0).toUpperCase()}</Text>
+                    </View>
+                  )}
+
+                  <View style={styles.headerText}>
+                    <Text style={styles.name}>{item.name}</Text>
+                    <Text style={styles.phone}>{item.phone}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.actions}>
+                  <Button title="Editar" onPress={() => handleEditContact(item)} />
+                  <Button
+                    title={deletingContactId === item.id ? "Excluindo..." : "Excluir"}
+                    color="#c62828"
+                    onPress={() => handleDeleteContact(item)}
+                    disabled={deletingContactId === item.id}
+                  />
+                </View>
               </View>
-            </View>
-          )}
+            );
+          }}
         />
       ) : null}
     </View>
@@ -169,6 +188,34 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.card,
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 12,
+  },
+  headerText: {
+    flex: 1,
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#ddd",
+  },
+  avatarFallback: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#dbeafe",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarFallbackText: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1d4ed8",
+  },
   name: {
     fontSize: 17,
     fontWeight: "600",
@@ -178,7 +225,6 @@ const styles = StyleSheet.create({
   phone: {
     fontSize: 15,
     color: colors.muted,
-    marginBottom: 12,
   },
   message: {
     marginTop: 24,

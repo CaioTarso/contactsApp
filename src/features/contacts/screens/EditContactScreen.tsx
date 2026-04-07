@@ -5,6 +5,7 @@ import { colors } from "../../../constants/theme";
 import { getSingleParam } from "../../../navigation/params";
 import { routes } from "../../../navigation/routes";
 import { updateContact } from "../../../services/api/contacts";
+import { ContactImageFile } from "../../../types";
 import ContactForm from "../components/ContactForm";
 
 export default function EditContactScreen() {
@@ -13,14 +14,18 @@ export default function EditContactScreen() {
     id?: string | string[];
     name?: string | string[];
     phone?: string | string[];
+    profilePictureUrl?: string | string[];
   }>();
 
   const token = getSingleParam(params.token);
   const rawId = getSingleParam(params.id);
   const initialName = getSingleParam(params.name) ?? "";
   const initialPhone = getSingleParam(params.phone) ?? "";
+  const initialProfilePictureUrl = getSingleParam(params.profilePictureUrl) ?? "";
   const [name, setName] = useState<string>(initialName);
   const [phone, setPhone] = useState<string>(initialPhone);
+  const [profilePicture, setProfilePicture] = useState<ContactImageFile | null>(null);
+  const [profilePictureUri, setProfilePictureUri] = useState<string>(initialProfilePictureUrl);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   async function handleUpdate() {
@@ -43,6 +48,7 @@ export default function EditContactScreen() {
       await updateContact(token, contactId, {
         name: name.trim(),
         phone: phone.trim(),
+        profile_picture: profilePicture ?? undefined,
       });
 
       Alert.alert("Contato atualizado", "As informacoes foram salvas.");
@@ -62,8 +68,13 @@ export default function EditContactScreen() {
         <ContactForm
           name={name}
           phone={phone}
+          profilePictureUri={profilePictureUri}
           onNameChange={setName}
           onPhoneChange={setPhone}
+          onProfilePictureChange={(image) => {
+            setProfilePicture(image);
+            setProfilePictureUri(image?.uri ?? initialProfilePictureUrl);
+          }}
           onSubmit={handleUpdate}
           submitLabel="Salvar alteracoes"
         />

@@ -5,6 +5,7 @@ import { colors } from "../../../constants/theme";
 import { getSingleParam } from "../../../navigation/params";
 import { routes } from "../../../navigation/routes";
 import { createContact } from "../../../services/api/contacts";
+import { ContactImageFile } from "../../../types";
 import ContactForm from "../components/ContactForm";
 
 export default function CreateContactScreen() {
@@ -12,6 +13,7 @@ export default function CreateContactScreen() {
   const token = getSingleParam(params.token);
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [profilePicture, setProfilePicture] = useState<ContactImageFile | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   async function handleCreate() {
@@ -32,6 +34,7 @@ export default function CreateContactScreen() {
       await createContact(token, {
         name: name.trim(),
         phone: phone.trim(),
+        profile_picture: profilePicture ?? undefined,
       });
 
       Alert.alert("Sucesso", "Contato criado!");
@@ -51,8 +54,10 @@ export default function CreateContactScreen() {
         <ContactForm
           name={name}
           phone={phone}
+          profilePictureUri={profilePicture?.uri ?? ""}
           onNameChange={setName}
           onPhoneChange={setPhone}
+          onProfilePictureChange={setProfilePicture}
           onSubmit={handleCreate}
           submitLabel="Salvar"
         />
