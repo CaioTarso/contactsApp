@@ -15,7 +15,7 @@ npm install
 Exemplo atual:
 
 ```env
-EXPO_PUBLIC_API_URL=http://192.168.0.12:3000
+EXPO_PUBLIC_API_URL=http://seuip:3000 ou http://localhost:3000
 ```
 
 Use o IP local da maquina onde sua API esta rodando.
