@@ -91,3 +91,4 @@ Tambem confirme:
 ## Observacoes
 
 - Se mudar o valor do `.env`, reinicie o Expo
+- Esse app consome uma api feita em Rails : https://github.com/CaioTarso/contacts_api

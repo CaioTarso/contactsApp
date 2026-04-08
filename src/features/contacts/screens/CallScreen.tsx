@@ -89,7 +89,7 @@ export default function CallScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#050816",
+    backgroundColor: "#000000",
     padding: 24,
     justifyContent: "center",
   },
